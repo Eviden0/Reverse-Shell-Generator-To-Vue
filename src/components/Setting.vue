@@ -30,7 +30,7 @@
                 </div>
                 <div class="content">
                     <div contenteditable="true" ref="editableDiv" :key="resetKey"><span class="sudo"
-                            v-if="port < 9000 && port > 0">sudo
+                            v-if="port < 1024 && port > 0">sudo
                         </span><span>{{ text1
                             }}</span><span class="hightLight">{{ port
                             }}</span><span>{{
