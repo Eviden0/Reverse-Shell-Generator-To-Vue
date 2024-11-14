@@ -6,12 +6,12 @@
                     <span>IP & Port</span>
                 </div>
                 <div class="content">
-                    <el-input v-model="dataStore.ip" style="width: 190px" placeholder="ip">
+                    <el-input v-model="dataStore.rsg.ip" style="width: 190px" placeholder="ip" @input="onInputChange">
                         <template #prepend>IP</template>
                     </el-input>
                     <div class="port">
-                        <el-input v-model="dataStore.port" style="width: 190px" placeholder="port"
-                            @input="updateListener">
+                        <el-input v-model="dataStore.rsg.port" style="width: 190px" placeholder="port"
+                            @input="onInputChange">
                             <template #prepend>PORT</template>
                         </el-input>
                         <el-button style="width: 10px;" @click="imcrement">+1</el-button>
@@ -23,21 +23,16 @@
             <el-card class="custom-card">
                 <div class="header">
                     <span>Listener</span>
-                    <div><el-button class="ebtn" @click="reset" type="danger" :icon="RefreshLeft" circle /><el-switch
-                            v-model="isShowAD" />
+                    <div>
+                        <!-- <el-button class="ebtn" @click="reset" type="danger" :icon="RefreshLeft" circle /> -->
+                        <el-switch v-model="isShowAD" />
                     </div>
 
                 </div>
                 <div class="content">
-                    <div contenteditable="true" ref="editableDiv" :key="resetKey"><span class="sudo"
-                            v-if="port < 1024 && port > 0">sudo
-                        </span><span>{{ text1
-                            }}</span><span class="hightLight">{{ port
-                            }}</span><span>{{
-                                text2
-                            }}</span></div>
+                    <div contenteditable="true" ref="editableDiv" :key="resetKey"></div>
                     <el-select v-model="advance" placeholder="Select" size="large"
-                        style="width: 200px;margin-top: 10px;" v-if="isShowAD" @change="updateListener">
+                        style="width: 200px;margin-top: 10px;" v-if="isShowAD" @change="updateListenerCommand">
                         <el-option v-for="item in listenerCommands" :key="item.type" :label="item.type"
                             :value="item.type" />
                     </el-select>
@@ -64,24 +59,20 @@ const dataStore = useDataStore()
 const isShowAD = ref(true)
 const advance = ref('')
 const listenerCommands = ref(listenerCommandsData) // 正确引用导入的 JSON 数据
-const text1 = ref('')
-const text2 = ref('')
-const port = ref()
 const editableDiv = ref(null)
 const resetKey = ref(1)
-function updateListener() {
-    const selectedCommand = listenerCommands.value.find(item => item.type === advance.value)
-    if (selectedCommand) {
-        [text1.value, text2.value] = selectedCommand.result.split('{port}')
-    }
-    port.value = dataStore.port
+// function updateListener() {
+//     const selectedCommand = listenerCommands.value.find(item => item.type === advance.value)
+//     if (selectedCommand) {
+//         [text1.value, text2.value] = selectedCommand.result.split('{port}')
+//     }
+//     port.value = dataStore.port
 
-}
-
+// }
 function imcrement() {
-    dataStore.imcrement()
-    updateListener()
-    reset()
+    dataStore.portImcrement()
+    onInputChange()
+    // reset()
 }
 function copyToClipboard() {
     if (editableDiv.value) {
@@ -99,12 +90,38 @@ function copyToClipboard() {
         })
     }
 }
-function reset() {
-    resetKey.value *= -1
+// function reset() {
+//     const step = advance.value
+//     resetKey.value *= -1
+//     advance.value = step
+// }
+
+function onInputChange() {
+    if (dataStore.rsg.port > 65535 || dataStore.rsg.port < 0) {
+        dataStore.rsg.port = 9001
+    }
+    updateListenerCommand()
+}
+
+
+
+/////////////
+function updateListenerCommand() {
+    if (!advance.value) return
+    let command = listenerCommands.value.find(item => item.type === advance.value).result
+    command = dataStore.rsg.highlightParameters(command)
+    command = command.replace('{port}', dataStore.rsg.getPort())
+    command = command.replace('{ip}', dataStore.rsg.getIP())
+    command = command.replace('{payload}', dataStore.rsg.getPayload())
+    command = command.replace('{type}', dataStore.rsg.getType())
+    if (dataStore.rsg.getPort() < 1024) {
+        command = `<span class="highlighted-warning">sudo</span> ${command}`
+    }
+    editableDiv.value.innerHTML = command
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .setting {
     display: flex;
     justify-content: space-evenly;
@@ -174,12 +191,14 @@ function reset() {
     /* 使卡片等高 */
 }
 
-.hightLight {
+
+.highlighted-parameter {
     color: #7223B5;
     font-weight: bold;
 }
 
-.sudo {
+.highlighted-warning {
     color: red;
+    font-weight: bold;
 }
 </style>
