@@ -1,7 +1,5 @@
 import { defineStore } from "pinia";
-import { ref, computed } from "vue";
-import { useRoute } from "vue-router";
-// const $route = useRoute()
+import { rsgData } from '../utils/data';
 const FilterOperatingSystemType = {
     'All': 'all',
     'Windows': 'windows',
@@ -28,29 +26,8 @@ const parsePortOrDefault = function (value, defaultPort = 9001) {
     const isValidPort = (Number.isSafeInteger(number) && number >= 0 && number <= 65535);
     return isValidPort ? number : defaultPort;
 };
-const filterCommandData = function (data, { commandType, filterOperatingSystem = FilterOperatingSystemType.All, filterText = '' }) {
-    return data.filter(item => {
-
-        if (!item.meta.includes(commandType)) {
-            return false;
-        }
-
-        var hasOperatingSystemMatch = (filterOperatingSystem === FilterOperatingSystemType.All) || item.meta.includes(filterOperatingSystem);
-        var hasTextMatch = item.name.toLowerCase().indexOf(filterText.toLowerCase()) >= 0;
-        return hasOperatingSystemMatch && hasTextMatch;
-    });
-}
-// ip: (query.get('ip') || localStorage.getItem('ip') || '10.10.10.10').replace(/[^a-zA-Z0-9.\-]/g, ''),
-// port: parsePortOrDefault(query.get('port') || localStorage.getItem('port')),
-// payload: query.get('payload') || localStorage.getItem('payload') || 'windows/x64/meterpreter/reverse_tcp',
-// payload: query.get('type') || localStorage.getItem('type') || 'cmd-curl',
-// shell: query.get('shell') || localStorage.getItem('shell') || rsgData.shells[0],
-// listener: query.get('listener') || localStorage.getItem('listener') || rsgData.listenerCommands[0][1],
-// encoding: query.get('encoding') || localStorage.getItem('encoding') || 'None',
 const query = new URLSearchParams(location.hash.substring(1));
 export const useDataStore = defineStore('Data', () => {
-
-
     const rsg = {
         ip: (query.get('ip') || localStorage.getItem('ip') || '10.10.10.10').replace(/[^a-zA-Z0-9.\-]/g, ''),
         port: parsePortOrDefault(query.get('port') || localStorage.getItem('port')),
@@ -166,9 +143,5 @@ export const useDataStore = defineStore('Data', () => {
     function portImcrement() {
         this.rsg.port++
     }
-
-
-    // const ip = ref('10.10.10.10')
-    // const port = ref(9000)
     return { rsg, portImcrement }
 })

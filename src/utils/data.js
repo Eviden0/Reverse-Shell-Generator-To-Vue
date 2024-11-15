@@ -637,3 +637,4 @@ if (typeof window !== 'undefined') {
     window.rsgData = rsgData;
     window.CommandType = CommandType;
 }
+export { rsgData }
