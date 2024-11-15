@@ -8,6 +8,7 @@
             <el-text class="mx-1">Reverse Shell Generator</el-text>
         </div>
         <setting />
+        <Nav />
     </el-card>
 </template>
 
@@ -18,6 +19,7 @@ import { Sunny, Moon } from '@element-plus/icons-vue';
 import { useDark, useToggle } from '@vueuse/core'
 import { useDataStore } from '../store/data';
 import Setting from './Setting.vue';
+import Nav from './Nav/index.vue';
 const dataStore = useDataStore()
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
