@@ -1,7 +1,7 @@
 <template>
     <div class="setting">
         <div class="ipAndPort">
-            <el-card class="custom-card">
+            <el-card class="custom-card" :style="{ backgroundColor: isDark ? '#303030' : 'white' }">
                 <div class="header">
                     <span>IP & Port</span>
                 </div>
@@ -20,7 +20,7 @@
             </el-card>
         </div>
         <div class="listener">
-            <el-card class="custom-card">
+            <el-card class="custom-card" :style="{ backgroundColor: isDark ? '#303030' : 'white' }">
                 <div class="header">
                     <span>Listener</span>
                     <div>
@@ -52,9 +52,8 @@ import { ref } from 'vue'
 import { useDataStore } from '../store/data';
 import listenerCommandsData from '../assets/json/listenerCommands.json'
 import { ElMessage } from 'element-plus'
-import {
-    RefreshLeft
-} from '@element-plus/icons-vue'
+import { useDark, useToggle } from '@vueuse/core'
+const isDark = useDark()
 const dataStore = useDataStore()
 const isShowAD = ref(true)
 const advance = ref('')

@@ -30,7 +30,7 @@ const toggleDark = useToggle(isDark)
     display: flex;
     width: 1200px;
     min-width: 600px;
-    height: 800px;
+    height: 900px;
     border-radius: 15px;
     flex-direction: column;
 

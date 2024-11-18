@@ -1,30 +1,33 @@
 <template>
     <div class="Nav">
-        <el-segmented v-model="value" :options="options" size="large" />
-        <Card />
+        <el-segmented v-model="navStore.nav" :options="options" size="large" @change="onNavChange" />
+        <Card ref="card" />
     </div>
-
-
 </template>
 
 <script setup lang='ts'>
 import Card from './Card.vue';
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useNavStore } from '../../store/nav'
+const navStore = useNavStore()
 
-const value = ref('Mon')
-
+const card = ref(null)
 const options = [
     'Reverse',
-    'Config',
-    'Role',
-    'fourth',
+    'Bind',
+    'MSFVenom',
+    'HoaxShell',
 ]
+
+function onNavChange() {
+    card.value.updateList()
+}
 
 </script>
 
 <style lang="scss" scoped>
 .Nav {
-    width: 100%;
+    // width: 100%;
     padding: 0 52px;
 }
 </style>
