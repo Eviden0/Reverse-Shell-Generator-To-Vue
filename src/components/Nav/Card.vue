@@ -20,7 +20,9 @@
                     <li v-for="item in listData" :key="item.name">{{ item.name }}</li>
                 </ul>
             </div>
-            <div class="mainContent">456</div>
+            <div class="mainContent">
+                <Reverse />
+            </div>
         </div>
     </el-card>
 </template>
@@ -30,6 +32,7 @@ import { ref, defineExpose } from 'vue'
 import { useDark } from '@vueuse/core'
 import { osList, reverseShellCommands, bindShellCommands, msfvenomCommands, hoaxShellCommands } from '../../utils/myData'
 import { useNavStore } from '../../store/nav'
+import Reverse from './Reverse.vue'
 const navStore = useNavStore()
 const isDark = useDark()
 const name = ref('')

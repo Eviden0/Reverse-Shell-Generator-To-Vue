@@ -12,9 +12,10 @@ import MainBoard from './components/MainBoard.vue';
 .app {
   display: flex;
   justify-content: center;
-  width: 100vw;
-  height: 100vh;
+  // width: 100vw;
+   min-height: 100vh;
+  // overflow-y:auto;
   background-color: #f0f0f0;
-  box-sizing: border-box;
+  // box-sizing: border-box;
 }
 </style>

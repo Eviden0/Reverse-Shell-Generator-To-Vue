@@ -27,10 +27,14 @@
                         <!-- <el-button class="ebtn" @click="reset" type="danger" :icon="RefreshLeft" circle /> -->
                         <el-switch v-model="isShowAD" />
                     </div>
-
                 </div>
                 <div class="content">
-                    <div contenteditable="true" ref="editableDiv" :key="resetKey"></div>
+                    <el-card class="mainContent" :style="{ backgroundColor: isDark ? '#303030' : '#ecefff' }" shadow="always" @click="focusEditable">
+                        <div class="editable-container">
+                            <span>🚀</span>
+                            <span ref="editableDiv" contenteditable class="editable"></span>
+                        </div>
+                    </el-card>
                     <el-select v-model="advance" placeholder="Select" size="large"
                         style="width: 200px;margin-top: 10px;" v-if="isShowAD" @change="updateListenerCommand">
                         <el-option v-for="item in listenerCommands" :key="item.type" :label="item.type"
@@ -40,7 +44,6 @@
                         <el-button type="primary" style="width: 100px;margin-top: 10px;"
                             @click="copyToClipboard">COPY</el-button>
                     </div>
-
                 </div>
             </el-card>
         </div>
@@ -48,7 +51,7 @@
 </template>
 
 <script setup lang='js'>
-import { ref } from 'vue'
+import { ref,onMounted } from 'vue'
 import { useDataStore } from '../store/data';
 import listenerCommandsData from '../assets/json/listenerCommands.json'
 import { ElMessage } from 'element-plus'
@@ -56,23 +59,16 @@ import { useDark, useToggle } from '@vueuse/core'
 const isDark = useDark()
 const dataStore = useDataStore()
 const isShowAD = ref(true)
-const advance = ref('')
+const advance = ref('nc')
 const listenerCommands = ref(listenerCommandsData) // 正确引用导入的 JSON 数据
 const editableDiv = ref(null)
 const resetKey = ref(1)
-// function updateListener() {
-//     const selectedCommand = listenerCommands.value.find(item => item.type === advance.value)
-//     if (selectedCommand) {
-//         [text1.value, text2.value] = selectedCommand.result.split('{port}')
-//     }
-//     port.value = dataStore.port
 
-// }
 function imcrement() {
     dataStore.portImcrement()
     onInputChange()
-    // reset()
 }
+
 function copyToClipboard() {
     if (editableDiv.value) {
         navigator.clipboard.writeText(editableDiv.value.innerText).then(() => {
@@ -89,11 +85,6 @@ function copyToClipboard() {
         })
     }
 }
-// function reset() {
-//     const step = advance.value
-//     resetKey.value *= -1
-//     advance.value = step
-// }
 
 function onInputChange() {
     if (dataStore.rsg.port > 65535 || dataStore.rsg.port < 0) {
@@ -102,9 +93,6 @@ function onInputChange() {
     updateListenerCommand()
 }
 
-
-
-/////////////
 function updateListenerCommand() {
     if (!advance.value) return
     let command = listenerCommands.value.find(item => item.type === advance.value).result
@@ -118,6 +106,15 @@ function updateListenerCommand() {
     }
     editableDiv.value.innerHTML = command
 }
+
+function focusEditable() {
+    if (editableDiv.value) {
+        editableDiv.value.focus()
+    }
+}
+onMounted(() => {
+    updateListenerCommand()
+})
 </script>
 
 <style lang="scss">
@@ -135,7 +132,6 @@ function updateListenerCommand() {
         display: flex;
         flex-direction: column;
         margin-bottom: 10px;
-
 
         .header {
             margin-bottom: 20px;
@@ -167,7 +163,23 @@ function updateListenerCommand() {
             display: flex;
             flex-direction: column;
 
+            .mainContent {
+                /* 其他样式 */
+                cursor: text; /* 鼠标指针变为文本选择 */
 
+                .editable-container {
+                    display: flex;
+                    align-items: flex-start; /* 确保文本在顶部对齐 */
+                    width: 100%;
+                }
+
+                .editable {
+                    outline: none; /* 移除编辑时的边框 */
+                    flex: 1; /* 使文本区域占据剩余空间 */
+                    word-break: break-word; /* 确保长单词换行 */
+                    white-space: pre-wrap; /* 保留空白符并换行 */
+                }
+            }
         }
     }
 
@@ -189,7 +201,6 @@ function updateListenerCommand() {
     flex: 1;
     /* 使卡片等高 */
 }
-
 
 .highlighted-parameter {
     color: #7223B5;
