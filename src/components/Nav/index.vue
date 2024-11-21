@@ -1,7 +1,7 @@
 <template>
     <div class="Nav">
         <el-segmented v-model="navStore.nav" :options="options" size="large" @change="onNavChange" />
-        <Card ref="card" />
+        <Card class=card ref="card" />
     </div>
 </template>
 
@@ -29,5 +29,9 @@ function onNavChange() {
 .Nav {
     // width: 100%;
     padding: 0 52px;
+}
+.card{
+    // max-height: 480px;
+    // overflow-y: auto;
 }
 </style>

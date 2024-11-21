@@ -35,7 +35,7 @@
                             <span ref="editableDiv" contenteditable class="editable"></span>
                         </div>
                     </el-card>
-                    <el-select v-model="advance" placeholder="Select" size="large"
+                    <el-select v-model="advance" filterable placeholder="Select" size="large"
                         style="width: 200px;margin-top: 10px;" v-if="isShowAD" @change="updateListenerCommand">
                         <el-option v-for="item in listenerCommands" :key="item.type" :label="item.type"
                             :value="item.type" />
@@ -62,7 +62,6 @@ const isShowAD = ref(true)
 const advance = ref('nc')
 const listenerCommands = ref(listenerCommandsData) // 正确引用导入的 JSON 数据
 const editableDiv = ref(null)
-const resetKey = ref(1)
 
 function imcrement() {
     dataStore.portImcrement()
@@ -164,6 +163,8 @@ onMounted(() => {
             flex-direction: column;
 
             .mainContent {
+                max-height: 160px;
+                overflow-y: auto;
                 /* 其他样式 */
                 cursor: text; /* 鼠标指针变为文本选择 */
 

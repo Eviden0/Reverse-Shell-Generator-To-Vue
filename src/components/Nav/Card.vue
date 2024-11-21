@@ -17,11 +17,13 @@
         <div class="content">
             <div class="aside">
                 <ul class="scrollable-list">
-                    <li v-for="item in listData" :key="item.name">{{ item.name }}</li>
+                    <li v-for="item in listData" :key="item.name" :class="getItemClass(item.name)" @click="onListCilck(item.name)">
+                        {{ item.name }}
+                    </li>
                 </ul>
             </div>
             <div class="mainContent">
-                <Reverse />
+                <Reverse v-show="navStore.nav=='Reverse'" ref="reverse" />
             </div>
         </div>
     </el-card>
@@ -37,26 +39,28 @@ const navStore = useNavStore()
 const isDark = useDark()
 const name = ref('')
 const os = ref('All')
-
+const reverse = ref(null)
+const selectedItem = ref(null)
 
 function onOSchange() {
     updateList()
 }
+
 function onNameChange() {
     updateList()
 }
-const listData = ref(reverseShellCommands)// 默认为这个
+
+const listData = ref(reverseShellCommands) // 默认为这个
+
 function updateList() {
     let currentShellCommands = reverseShellCommands
     if (navStore.nav === 'Reverse') {
         currentShellCommands = reverseShellCommands
     } else if (navStore.nav === 'Bind') {
         currentShellCommands = bindShellCommands
-    }
-    else if (navStore.nav === 'MSFVenom') {
+    } else if (navStore.nav === 'MSFVenom') {
         currentShellCommands = msfvenomCommands
-    }
-    else if (navStore.nav === 'HoaxShell') {
+    } else if (navStore.nav === 'HoaxShell') {
         currentShellCommands = hoaxShellCommands
     }
     if (os.value === 'All') {
@@ -68,10 +72,25 @@ function updateList() {
         listData.value = listData.value.filter(item => item.name.toLowerCase().includes(name.value.toLowerCase()))
     }
 }
+
+function onListCilck(commandName) {
+    selectedItem.value = commandName
+    if (navStore.nav === 'Reverse') {
+        reverse.value.updateCommand(commandName)
+        // console.log(commandName)
+    }
+}
+
+function getItemClass(itemName) {
+    return {
+        selected: selectedItem.value === itemName,
+        'selected-dark': selectedItem.value === itemName && isDark.value
+    }
+}
+
 defineExpose({
     updateList, os
 })
-
 </script>
 
 <style lang="scss" scoped>
@@ -92,12 +111,12 @@ span,
 
     .aside {
         flex: 2;
-        display: flex;
-        flex-direction: column;
+        // display: flex;
+        // flex-direction: column;
     }
 
     .scrollable-list {
-        flex: 2;
+        // flex: 2;
         display: flex;
         flex-direction: column;
         padding: 0;
@@ -130,6 +149,14 @@ span,
 
     li:hover {
         background-color: skyblue
+    }
+
+    li.selected {
+        background-color: lightblue;
+    }
+
+    li.selected-dark {
+        background-color: #375A7F;
     }
 
     .mainContent {

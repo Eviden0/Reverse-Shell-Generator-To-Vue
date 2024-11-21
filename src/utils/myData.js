@@ -577,3 +577,7 @@ export const hoaxShellCommands =
             "meta": ["windows"]
         }
     ]
+
+export const shells = ['sh', '/bin/sh', 'bash', '/bin/bash', 'cmd', 'powershell', 'pwsh', 'ash', 'bsh', 'csh', 'ksh', 'zsh', 'pdksh', 'tcsh', 'mksh', 'dash']
+
+export const encodings = ['None', 'URL Encode', 'Double URL Encoude', 'Base64']
