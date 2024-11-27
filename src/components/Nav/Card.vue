@@ -11,7 +11,7 @@
                 <el-input class="input" v-model="name" placeholder="Name" size="large" @input="onNameChange"></el-input>
                 <el-switch class="switch" v-model="isDark" :active-icon="Moon" :inactive-icon="Sunny" inline-prompt
                     @change="toggleDark" />
-                <el-button type="primary" @click="generate">Generate</el-button>
+                <el-button type="primary" @click="getEditableContent">Generate</el-button>
             </div>
         </template>
         <div class="content">
@@ -35,13 +35,13 @@ import { useDark } from '@vueuse/core'
 import { osList, reverseShellCommands, bindShellCommands, msfvenomCommands, hoaxShellCommands } from '../../utils/myData'
 import { useNavStore } from '../../store/nav'
 import Reverse from './Reverse.vue'
+
 const navStore = useNavStore()
 const isDark = useDark()
 const name = ref('')
 const os = ref('All')
 const reverse = ref(null)
 const selectedItem = ref(null)
-
 function onOSchange() {
     updateList()
 }
@@ -71,6 +71,10 @@ function updateList() {
     if (name.value) {
         listData.value = listData.value.filter(item => item.name.toLowerCase().includes(name.value.toLowerCase()))
     }
+
+    //这里要修改
+    if(!selectedItem)
+    selectedItem.value=listData.value[0].name
 }
 
 function onListCilck(commandName) {
@@ -85,6 +89,13 @@ function getItemClass(itemName) {
     return {
         selected: selectedItem.value === itemName,
         'selected-dark': selectedItem.value === itemName && isDark.value
+    }
+}
+function getEditableContent() {
+    if (reverse.value) {
+        const content = reverse.value.getEditableContent()
+        console.log(content)
+        navStore.setPayloadContent(content)
     }
 }
 

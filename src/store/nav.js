@@ -3,11 +3,15 @@ import { defineStore } from "pinia";
 export const useNavStore = defineStore('Nav', () => {
     const nav = ref('Reverse')
     const command = ref('')
+    const payloadContent = ref('')
+    const dialogVisiable = ref(false)
     function setNav(value) {
         nav.value = value
     }
-    function setCommand(value) {
-        command.value = value
+
+    function setPayloadContent(value) {
+        dialogVisiable.value = true
+        payloadContent.value = value
     }
-    return { nav, setNav, command, setCommand }
+    return { nav, setNav, dialogVisiable, payloadContent, setPayloadContent }
 });

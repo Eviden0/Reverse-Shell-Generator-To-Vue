@@ -125,16 +125,23 @@ export const useDataStore = defineStore('Data', () => {
 
             return command;
         },
-
+        fixedEncodeURIComponent: (str) => {
+            return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
+                return '%' + c.charCodeAt(0).toString(16).toUpperCase();
+            });
+        },
         highlightParameters: (text, encoder) => {
             // 确保 text 是一个字符串
             text = String(text);
 
             const parameters = ['{ip}', '{port}', '{shell}', encodeURI('{ip}'), encodeURI('{port}'), encodeURI('{shell}')];
+            // console.log(parameters)
 
             parameters.forEach((param) => {
                 if (encoder) param = encoder(param);
+                // console.log(param)
                 text = text.replace(new RegExp(param, 'g'), `<span class="highlighted-parameter">${param}</span>`);
+
             });
 
             return text;
