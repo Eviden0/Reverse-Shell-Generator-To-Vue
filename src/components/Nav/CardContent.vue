@@ -21,7 +21,7 @@
                 </el-select>
         </div>
         <div class="acctions">
-            <el-button type="primary" style="width: 150px;margin-top: 10px;" @click="window.open('https://github.com/t3l3machus/hoaxshell/tree/main/revshells', '_blank')" v-show="showDownload">Download Listener</el-button>
+            <el-button type="primary" style="width: 150px;margin-top: 10px;" @click="openWebPage" v-show="showDownload">Download Listener</el-button>
             <el-button type="primary" style="width: 80px;margin-top: 10px;" @click="copyToClipboard">COPY</el-button>
         </div>
 
@@ -140,6 +140,9 @@ function copyToClipboard() {
             })
         })
     }
+}
+function openWebPage() {
+    window.open('https://github.com/t3l3machus/hoaxshell/tree/main/revshells', '_blank')
 }
 </script>
 
