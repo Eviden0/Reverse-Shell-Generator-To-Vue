@@ -23,7 +23,11 @@
                 </ul>
             </div>
             <div class="mainContent">
-                <Reverse v-show="navStore.nav=='Reverse'" ref="reverse" />
+                 <CardContent v-show="navStore.nav=='Reverse'" ref="reverse" :shellCommands="reverseShellCommands" />
+                 <CardContent v-show="navStore.nav=='Bind'" ref="bind" :shellCommands="bindShellCommands" />
+                 <CardContent v-show="navStore.nav=='MSFVenom'" ref="msfvenom" :shellCommands="msfvenomCommands" />
+                 <CardContent v-show="navStore.nav=='HoaxShell'" ref="hoaxShell" :shellCommands="hoaxShellCommands" />
+
             </div>
         </div>
     </el-card>
@@ -35,12 +39,16 @@ import { useDark } from '@vueuse/core'
 import { osList, reverseShellCommands, bindShellCommands, msfvenomCommands, hoaxShellCommands } from '../../utils/myData'
 import { useNavStore } from '../../store/nav'
 import Reverse from './Reverse.vue'
+import CardContent from './CardContent.vue'
 
 const navStore = useNavStore()
 const isDark = useDark()
 const name = ref('')
 const os = ref('All')
 const reverse = ref(null)
+const bind = ref(null)
+const msfvenom = ref(null)
+const hoaxShell = ref(null)
 const selectedItem = ref(null)
 function onOSchange() {
     updateList()
@@ -81,7 +89,15 @@ function onListCilck(commandName) {
     selectedItem.value = commandName
     if (navStore.nav === 'Reverse') {
         reverse.value.updateCommand(commandName)
-        // console.log(commandName)
+    }
+    if(navStore.nav === 'Bind'){
+        bind.value.updateCommand(commandName)
+    }
+    if(navStore.nav === 'MSFVenom'){
+        msfvenom.value.updateCommand(commandName)
+    }
+    if(navStore.nav === 'HoaxShell'){
+        hoaxShell.value.updateCommand(commandName)
     }
 }
 
