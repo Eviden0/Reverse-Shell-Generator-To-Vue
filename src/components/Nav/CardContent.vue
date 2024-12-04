@@ -1,5 +1,5 @@
 <template>
-    <div class="reverse">
+    <div class="CardContent">
         <div class="upper">
             <el-card class="mainContent" :style="{ backgroundColor: isDark ? '#303030' : '#ecefff' }" shadow="always"
                 @click="focusEditable">
@@ -10,17 +10,21 @@
             </el-card>
         </div>
 
-        <div class="options">
-            <el-select v-model="shell" filterable placeholder="Select" style="width: 120px">
-                <el-option v-for="item in shellsOptions" :key="item.value" :label="item.label" :value="item.value"
-                    @click="updateCommand(currentShellCommand)" />
-            </el-select>
-            <el-select v-model="encoding" placeholder="Select" style="width: 120px">
-                <el-option v-for="item in encodingsOptions" :key="item.value" :label="item.label" :value="item.value"
-                    @click="updateCommand(currentShellCommand)" />
-            </el-select>
-            <el-button type="primary" style="width: 100px;margin-top: 10px;" @click="copyToClipboard">COPY</el-button>
+        <div class="options" v-show="showOptions">
+                 <el-select v-model="shell" filterable placeholder="Select" style="width: 120px">
+                    <el-option v-for="item in shellsOptions" :key="item.value" :label="item.label" :value="item.value"
+                        @click="updateCommand(currentShellCommand)" />
+                </el-select>
+                <el-select v-model="encoding" placeholder="Select" style="width: 120px">
+                    <el-option v-for="item in encodingsOptions" :key="item.value" :label="item.label"
+                        :value="item.value" @click="updateCommand(currentShellCommand)" />
+                </el-select>
         </div>
+        <div class="acctions">
+            <el-button type="primary" style="width: 150px;margin-top: 10px;" @click="window.open('https://github.com/t3l3machus/hoaxshell/tree/main/revshells', '_blank')" v-show="showDownload">Download Listener</el-button>
+            <el-button type="primary" style="width: 80px;margin-top: 10px;" @click="copyToClipboard">COPY</el-button>
+        </div>
+
     </div>
 </template>
 
@@ -34,7 +38,7 @@ const dataStore = useDataStore()
 const isDark = useDark()
 const currentShellCommand = ref('Bash -i')
 const editable = ref(null)
-const props = defineProps(['shellCommands'])
+const props = defineProps(['shellCommands', 'showOptions', 'showDownload'])
 function focusEditable() {
     if (editable.value) {
         editable.value.focus()
@@ -66,7 +70,7 @@ function updateCommand(commandName) {
     if (!commandName)
         return
     currentShellCommand.value = commandName
-    console.log(commandName,props.shellCommands)
+    console.log(commandName, props.shellCommands)
     let command = props.shellCommands.find(item => item.name === commandName).command
     if (!command)
         return
@@ -79,7 +83,7 @@ function updateCommand(commandName) {
         command = command.replace('{type}', dataStore.rsg.getType())
         command = command.replace('{shell}', shell.value)
 
-    
+
     }
     if (encoding.value === 'Base64') {
         command = command.replace('{port}', dataStore.rsg.getPort())
@@ -98,11 +102,10 @@ function updateCommand(commandName) {
         command = command.replace('%7Btype%7D', dataStore.rsg.getType())
         command = command.replace('%7Bshell%7D', shell.value)
     }
-    else if(encoding.value === 'Double URL Encoude')
-    {
+    else if (encoding.value === 'Double URL Encoude') {
         command = dataStore.rsg.fixedEncodeURIComponent(command)
         command = dataStore.rsg.fixedEncodeURIComponent(command)
-        command = dataStore.rsg.highlightParameters(command,dataStore.rsg.fixedEncodeURIComponent)
+        command = dataStore.rsg.highlightParameters(command, dataStore.rsg.fixedEncodeURIComponent)
         command = command.replace('%257Bport%257D', dataStore.rsg.getPort)
         command = command.replace('%257Bip%257D', dataStore.rsg.getIP())
         command = command.replace('%257Bpayload%257D', dataStore.rsg.getPayload())
@@ -141,7 +144,7 @@ function copyToClipboard() {
 </script>
 
 <style lang="scss" scoped>
-.reverse {
+.CardContent {
     display: flex;
     flex-direction: column;
     padding: 10px 0 0 20px;
@@ -179,8 +182,12 @@ function copyToClipboard() {
     .options {
         flex: 1;
         display: flex;
-        justify-content: space-between;
+        justify-content: space-evenly;
         padding: 10px 0 0 0;
+    }
+    .acctions{
+        display: flex;
+        justify-content: end;
     }
 }
 </style>

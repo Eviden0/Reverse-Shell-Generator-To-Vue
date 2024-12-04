@@ -23,10 +23,10 @@
                 </ul>
             </div>
             <div class="mainContent">
-                 <CardContent v-show="navStore.nav=='Reverse'" ref="reverse" :shellCommands="reverseShellCommands" />
+                 <CardContent v-show="navStore.nav=='Reverse'" ref="reverse" :shellCommands="reverseShellCommands" :showOptions="true"/>
                  <CardContent v-show="navStore.nav=='Bind'" ref="bind" :shellCommands="bindShellCommands" />
                  <CardContent v-show="navStore.nav=='MSFVenom'" ref="msfvenom" :shellCommands="msfvenomCommands" />
-                 <CardContent v-show="navStore.nav=='HoaxShell'" ref="hoaxShell" :shellCommands="hoaxShellCommands" />
+                 <CardContent v-show="navStore.nav=='HoaxShell'" ref="hoaxShell" :shellCommands="hoaxShellCommands" :showDownload="true"/>
 
             </div>
         </div>
@@ -108,13 +108,23 @@ function getItemClass(itemName) {
     }
 }
 function getEditableContent() {
-    if (reverse.value) {
-        const content = reverse.value.getEditableContent()
-        console.log(content)
+    if(navStore.nav === 'Reverse'){
+        const content =reverse.value.getEditableContent()
+        navStore.setPayloadContent(content)
+    }
+    if(navStore.nav === 'Bind'){
+        const content =bind.value.getEditableContent()
+        navStore.setPayloadContent(content)
+    }
+    if(navStore.nav === 'MSFVenom'){
+        const content =msfvenom.value.getEditableContent()
+        navStore.setPayloadContent(content)
+    }
+    if(navStore.nav === 'HoaxShell'){
+        const content =hoaxShell.value.getEditableContent()
         navStore.setPayloadContent(content)
     }
 }
-
 defineExpose({
     updateList, os
 })
